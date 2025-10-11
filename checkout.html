@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ชำระเงิน | Hiw jangg</title>
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* CSS สำหรับหน้านี้โดยเฉพาะ */
+        .checkout-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap; 
+        }
+        .form-section, .summary-section {
+            flex: 1;
+            min-width: 350px; 
+        }
+        .form-section h2, .summary-section h2 {
+            border-bottom: 2px solid #ff6347;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            color: #343a40;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .summary-items {
+            max-height: 400px;
+            overflow-y: auto;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+        }
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.95em; 
+            line-height: 1.3;
+        }
+        .summary-item .title {
+            flex: 1;
+        }
+        .summary-total {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #ff6347;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        .btn-confirm {
+            background-color: #28a745; 
+            color: #fff;
+            margin-top: 20px;
+            width: 100%;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-confirm:hover {
+            background-color: #218838;
+        }
+        .text-secondary {
+            color: #6c757d;
+            font-size: 0.85em;
+        }
+
+        /* Responsive CSS */
+        @media (max-width: 768px) {
+            .checkout-container {
+                flex-direction: column;
+                margin: 20px auto;
+                padding: 20px;
+            }
+            .form-section, .summary-section {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo"><a href="index.html">Hiw jangg</a></div>
+    </header>
+
+    <div class="checkout-container">
+        
+        <div class="form-section">
+            <h2>ข้อมูลการจัดส่ง</h2>
+            <form id="deliveryForm">
+                <div class="form-group">
+                    <label for="name">ชื่อ-นามสกุล:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">เบอร์โทรศัพท์:</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">ที่อยู่จัดส่ง:</label>
+                    <textarea id="address" name="address" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="payment">ช่องทางการชำระเงิน:</label>
+                    <select id="payment" name="payment" required>
+                        <option value="cash">เงินสดปลายทาง (COD)</option>
+                        <option value="transfer">โอนเงินธนาคาร</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="note">หมายเหตุถึงร้าน (ถ้ามี):</label>
+                    <textarea id="note" name="note" rows="2"></textarea>
+                </div>
+            </form>
+        </div>
+
+        <div class="summary-section">
+            <h2>สรุปรายการสั่งซื้อ</h2>
+            
+            <div class="summary-items" id="checkout-cart-summary">
+                <p style="text-align: center;">กำลังโหลดรายการสินค้า...</p>
+                </div>
+            
+            <div class="summary-total">
+                <span>ยอดรวมทั้งหมด:</span>
+                <span id="checkout-total-amount">0.00 THB</span>
+            </div>
+            
+            <button class="btn btn-confirm" onclick="submitOrder()">ยืนยันคำสั่งซื้อ</button>
+            <p id="checkout-status-message" style="text-align: center; margin-top: 15px; font-weight: bold;"></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script> 
+    <script>
+        // โค้ด JavaScript สำหรับหน้า Checkout
+        
+        // 🔴 ลบการประกาศซ้ำซ้อนของ cart และ CART_STORAGE_KEY ออก
+        // ตัวแปรทั้งสองจะถูกใช้งานจาก script.js แทน
+
+        // 🟢 เปลี่ยนชื่อฟังก์ชันเป็น loadCartInCheckout เพื่อไม่ให้ซ้ำกับใน script.js
+        const loadCartInCheckout = () => {
+            try {
+                // 🟢 ใช้ตัวแปร CART_STORAGE_KEY และ cart ที่มาจาก script.js
+                const storedCart = localStorage.getItem(CART_STORAGE_KEY); 
+                cart = storedCart ? JSON.parse(storedCart) : {}; 
+            } catch (error) {
+                console.error("Error loading cart in checkout:", error);
+                cart = {};
+            }
+        };
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCartInCheckout(); 
+            renderCheckoutSummary();
+        });
+
+        function renderCheckoutSummary() {
+            const summaryContainer = document.getElementById('checkout-cart-summary');
+            const totalElement = document.getElementById('checkout-total-amount');
+            let totalAmount = 0;
+            summaryContainer.innerHTML = '';
+
+            // ตรวจสอบว่า cart ถูกโหลดมาแล้วหรือไม่
+            if (typeof cart === 'undefined' || Object.keys(cart).length === 0) {
+                 summaryContainer.innerHTML = '<p style="text-align: center; color: #ff6347; font-weight: 500;">ตะกร้าสินค้าว่างเปล่า</p>';
+                 totalElement.textContent = "0.00 THB";
+                 return;
+            }
+
+            for (const itemKey in cart) { 
+                const item = cart[itemKey]; 
+                const itemTotal = item.price * item.quantity;
+                totalAmount += itemTotal;
+                
+                // สร้างรายละเอียดการปรับแต่งจาก item.customization
+                const customizations = [];
+                if (item.customization) {
+                    if (item.customization.spiciness) customizations.push(`เผ็ด: ${item.customization.spiciness}`);
+                    if (item.customization.addons && item.customization.addons.length > 0) customizations.push(`เพิ่ม: ${item.customization.addons.join(', ')}`);
+                    if (item.customization.sweetness) customizations.push(`หวาน: ${item.customization.sweetness}`); 
+                    if (item.customization.topping && item.customization.topping.length > 0) customizations.push(`ท็อปปิ้ง: ${item.customization.topping.join(', ')}`);
+                    if (item.customization.temp) customizations.push(`อุณหภูมิ: ${item.customization.temp}`);
+                }
+                const customText = customizations.length > 0 ? `<br><span class="text-secondary">(${customizations.join(' | ')})</span>` : '';
+
+
+                const notes = (item.customization && item.customization.notes && item.customization.notes.length > 0) ? 
+                              `<br><small style="color:#6c757d; display: block; margin-top: 3px;">(หมายเหตุสินค้า: ${item.customization.notes})</small>` : '';
+
+                const summaryItemHTML = `
+                    <div class="summary-item">
+                        <span class="title">
+                            ${item.quantity} x ${item.title}
+                            ${customText}
+                            ${notes}
+                        </span>
+                        <span class="price">${itemTotal.toFixed(2)} THB}</span>
+                    </div>
+                `;
+                
+                summaryContainer.insertAdjacentHTML('beforeend', summaryItemHTML);
+            }
+            
+            totalElement.textContent = totalAmount.toFixed(2) + " THB";
+        }
+
+        function submitOrder() {
+            const form = document.getElementById('deliveryForm');
+            const statusMessage = document.getElementById('checkout-status-message');
+            
+            if (typeof cart === 'undefined' || Object.keys(cart).length === 0) {
+                statusMessage.textContent = "ตะกร้าสินค้าว่างเปล่า! กรุณากลับไปหน้าหลักเพื่อเลือกเมนู";
+                statusMessage.style.color = '#ff6347';
+                return;
+            }
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+            
+            statusMessage.textContent = "กำลังดำเนินการสั่งซื้อ...";
+            statusMessage.style.color = '#007bff';
+
+            const formData = {
+                name: form.name.value,
+                phone: form.phone.value,
+                address: form.address.value,
+                payment: form.payment.value,
+                note: form.note.value,
+                total: document.getElementById('checkout-total-amount').textContent,
+                orderItems: cart, 
+                orderTime: new Date().toLocaleString('th-TH')
+            };
+
+            // 1. เก็บข้อมูลคำสั่งซื้อและสถานะเริ่มต้นไว้ใน Local Storage (Key เดิม ถูกต้อง)
+            localStorage.setItem('lastOrder', JSON.stringify(formData));
+            localStorage.setItem('orderStatus', 'กำลังรับคำสั่งซื้อ'); 
+
+            // 2. ล้างตะกร้า (ใช้ Key ที่มาจาก script.js)
+            localStorage.removeItem(CART_STORAGE_KEY); 
+            
+            // 3. แสดงข้อความสำเร็จและส่งต่อ
+            statusMessage.textContent = "✅ สั่งซื้อสำเร็จ! กำลังนำไปยังหน้าสถานะ";
+            statusMessage.style.color = '#28a745';
+            
+            setTimeout(() => {
+                window.location.href = 'order-status.html';
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

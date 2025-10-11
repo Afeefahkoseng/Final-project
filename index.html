@@ -3,159 +3,270 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chilli & Lime - สั่งอาหารออนไลน์</title>    
-    
-    <meta name="description" content="Chilli & Lime: สั่งอาหารไทยรสจัดจ้านและอาหารฟิวชั่นออนไลน์ พร้อมบริการจัดส่งถึงบ้าน รวดเร็วทันใจ พร้อมโปรโมชั่นมากมาย">
-    
-    <meta name="keywords" content="สั่งอาหารออนไลน์, ร้านอาหารไทย, เดลิเวอรี่, ต้มยำ, ผัดไท, Chilli & Lime">
-    
-    <meta property="og:title" content="Chilli & Lime | สั่งอาหารไทยออนไลน์">
-    
-    <meta property="og:image" content="https://via.placeholder.com/1200x630.png?text=Chilli+and+Lime+Food">
-    
-    <meta name="author" content="Afeefah"> 
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Hiw jangg - สั่งอาหารออนไลน์</title>
+
+    <meta name="description" content="สั่งอาหารไทยรสเด็ดจาก Hiw jangg ออนไลน์! เมนูหลากหลายพร้อมตัวเลือกปรับแต่งความเผ็ดและวัตถุดิบ บริการจัดส่งรวดเร็ว">
+    <meta name="keywords" content="สั่งอาหาร, ร้านอาหารไทย, เดลิเวอรี่, ต้มยำ, ผัดไทย, Hiw jangg, ปรับความเผ็ด">
+    <meta name="author" content="Afeefah">
+
+    <meta property="og:title" content="็Hiw jangg | สั่งอาหารไทยอร่อย ส่งตรงถึงบ้าน">
+    <meta property="og:image" content="https://via.placeholder.com/1200x630.png?text=Hiw+janggPromotion">
+
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
 
     <header class="header">
         <div class="logo">
-            <a href="#">Chilli & Lime</a> </div>
+            <a href="#">Hiw jangg</a>
+        </div>
         <nav class="main-nav">
             <ul>
-                <li><a href="#">หน้าหลัก</a></li>
-                <li><a href="#">เมนู</a></li>
-                <li><a href="#">โปรโมชั่น</a></li>
-                <li><a href="#">ติดต่อเรา</a></li>
+                <li><a href="#" onclick="showInfoPage('หน้าหลัก')">หน้าหลัก</a></li>
+                <li><a href="#" onclick="filterMenu('ขายดี', document.querySelector('[data-category=\"ขายดี\"]'))">เมนู</a></li>
+                <li><a href="#contact-section">ติดต่อเรา</a></li>
             </ul>
         </nav>
         <div class="header-actions">
             <div class="search-bar">
-                <input type="text" placeholder="ค้นหา...">
+                <input type="text" id="menu-search-input" placeholder="ค้นหาเมนู..." onkeyup="searchMenu()">
                 <i class="fas fa-search"></i>
             </div>
-            <div class="cart-icon">
+            <div class="cart-icon" onclick="showInfoPage('ตะกร้าสินค้า')">
                 <i class="fas fa-shopping-cart"></i>
-                <span class="cart-count">3</span>
+                <span class="cart-count">0</span>
             </div>
         </div>
     </header>
 
-    <section class="hero-section">
-        <div class="hero-content">
-            <h1>อร่อยจนเจ็บ!</h1>
-            <p>ได้รีบโคม 30%</p>
-            <button class="btn btn-primary">สั่งเลย</button>
+    <!-- START: CAROUSEL SECTION -->
+    <section class="carousel-container">
+        <div class="carousel-inner" id="carousel-inner">
+            <!-- Slides will be inserted here by JavaScript -->
+        </div>
+        <button class="carousel-control prev" onclick="prevSlide()">&#10094;</button>
+        <button class="carousel-control next" onclick="nextSlide()">&#10095;</button>
+        <div class="carousel-indicators" id="carousel-indicators">
+            <!-- Indicators will be inserted here by JavaScript -->
         </div>
     </section>
+    <!-- END: CAROUSEL SECTION -->
 
     <main class="main-container">
+        <!-- START: TWO-COLUMN CONTENT WRAPPER (Menu + Cart) -->
         <div class="content-wrapper">
             
             <section class="menu-section">
-                <h2>เมนูยอดนิยม</h2>
+                <h2>เมนูแนะนำ</h2>
                 <div class="menu-categories">
-                    <button class="category-btn active">เมนูขายดี</button>
-                    <button class="category-btn">อาหาร</button>
-                    <button class="category-btn">เครื่องดื่ม</button>
-                    <button class="category-btn">ของหวาน</button>
+                    <button class="category-btn active" data-category="ขายดี" onclick="filterMenu('ขายดี', this)">เมนูขายดี</button>
+                    <button class="category-btn" data-category="อาหาร" onclick="filterMenu('อาหาร', this)">อาหารจานเดียว</button>
+                    <button class="category-btn" data-category="เครื่องดื่ม" onclick="filterMenu('เครื่องดื่ม', this)">เครื่องดื่ม</button>
+                    <button class="category-btn" data-category="ของหวาน" onclick="filterMenu('ของหวาน', this)">ของหวาน</button>
                 </div>
-                <div class="menu-items-grid">
-                    <div class="menu-item">
-                        <img src="https://via.placeholder.com/300x200.png?text=ต้มยำ" alt="ต้มยำ">
-                        <div class="item-info">
-                            <h3>ต้มยำ</h3>
-                            <p>ต้มยำรสเครื่องเทศ เข้มข้น แต่ไม่เผ็ด</p>
-                            <span class="price">250 THB</span>
-                            <button class="btn btn-secondary">
-                                <i class="fas fa-shopping-cart"></i> เพิ่มลงตะกร้า
-                            </button>
-                        </div>
-                    </div>
-                    <div class="menu-item">
-                        <img src="https://via.placeholder.com/300x200.png?text=แกงส้ม" alt="แกงส้ม">
-                        <div class="item-info">
-                            <h3>แกงส้ม</h3>
-                            <p>รสชาติเข้มข้น </p>
-                            <span class="price">120 THB</span>
-                            <button class="btn btn-secondary">
-                                <i class="fas fa-shopping-cart"></i> เพิ่มลงตะกร้า
-                            </button>
-                        </div>
-                    </div>
-                    <div class="menu-item">
-                        <img src="https://via.placeholder.com/300x200.png?text=ข้าวเหนียวมะม่วง" alt="ข้าวเหนียวมะม่วง">
-                        <div class="item-info">
-                            <h3>ข้าวเหนียวมะม่วง</h3>
-                            <p>กะทิหวานมันหอม</p>
-                            <span class="price">95 THB</span>
-                            <button class="btn btn-secondary">
-                                <i class="fas fa-shopping-cart"></i> เพิ่มลงตะกร้า
-                            </button>
-                        </div>
-                    </div>
-                    </div>
-            </section>
 
-            <aside class="cart-sidebar">
-                <h3>ตะกร้าสินค้า <span class="cart-count-text">(3 ชิ้น)</span></h3>
-                <div class="cart-items">
-                    <div class="cart-item">
-                        <img src="https://via.placeholder.com/60x60.png?text=ลาบไก่" alt="ลาบไก่">
-                        <div class="item-details">
-                            <h4>ลาบไก่</h4>
-                            <div class="item-actions">
-                                <button>-</button>
-                                <span>1</span>
-                                <button>+</button>
-                            </div>
-                        </div>
+                <div class="menu-items-grid">
+                    <!-- เมนูอาหารหลัก -->
+                    <div class="menu-item" data-category="อาหาร">
+                        <img src="https://esanbanna.com/wp-content/uploads/2022/12/ต้นยำกุ้ง.jpg" alt="ต้มยำกุ้ง">
+                        <div class="item-info"><h3>ต้มยำกุ้งน้ำข้น</h3><p>รสชาติเข้มข้น จัดจ้านถึงเครื่องสมุนไพร</p><span class="price">69.00 THB</span><button class="btn btn-secondary" onclick="openCustomization(this)"><i class="fas fa-shopping-cart"></i> เพิ่มลงตะกร้า</button></div>
                     </div>
-                    <div class="cart-item">
-                        <img src="https://via.placeholder.com/60x60.png?text=ข้าวผัด" alt="ข้าวผัด">
-                        <div class="item-details">
-                            <h4>ข้าวผัด</h4>
-                            <div class="item-actions">
-                                <button>-</button>
-                                <span>1</span>
-                                <button>+</button>
-                            </div>
-                        </div>
+                    <div class="menu-item" data-category="อาหาร">
+                        <img src="https://img.wongnai.com/p/1968x0/2019/05/04/15a588ebc226426f8ae18e2a6bc955f8.jpg" alt="ผัดไทยกุ้งสด">
+                        <div class="item-info"><h3>ผัดไทยกุ้งสด</h3><p>เส้นจันท์เหนียวนุ่ม ผัดซอสสูตรพิเศษ</p><span class="price">59.00 THB</span><button class="btn btn-secondary" onclick="openCustomization(this)"><i class="fas fa-shopping-cart"></i> เพิ่มลงตะกร้า</button></div>
                     </div>
-                    <div class="cart-item">
-                        <img src="https://via.placeholder.com/60x60.png?text=ผัดซีอิ๊ว" alt="ผัดซีอิ๊ว">
-                        <div class="item-details">
-                            <h4>ผัดซีอิ๊ว</h4>
-                            <div class="item-actions">
-                                <button>-</button>
-                                <span>1</span>
-                                <button>+</button>
-                            </div>
-                        </div>
+                    <div class="menu-item" data-category="อาหาร">
+                        <img src="https://food-heal.com/wp-content/uploads/2025/02/4.jpg" alt="แกงเขียวหวาน">
+                        <div class="item-info"><h3>แกงเขียวหวานไก่</h3><p>รสชาติหอมมัน กลมกล่อม</p><span class="price">65.00 THB</span><button class="btn btn-secondary" onclick="openCustomization(this)"><i class="fas fa-shopping-cart"></i> เพิ่มลงตะกร้า</button></div>
+                    </div>
+                    <div class="menu-item" data-category="อาหาร">
+                        <img src="https://www.pholfoodmafia.com/wp-content/uploads/2021/04/6Pineapple-Baked-Rice.jpg" alt="ข้าวผัดสับปะรด">
+                        <div class="item-info"><h3>ข้าวผัดสับปะรด</h3><p>หอมเครื่องเทศ เสิร์ฟในลูกสับปะรด</p><span class="price">89.00 THB</span><button class="btn btn-secondary" onclick="openCustomization(this)"><i class="fas fa-shopping-cart"></i> เพิ่มลงตะกร้า</button></div>
+                    </div>
+
+                    <!-- เมนูอาหารจานเดียวใหม่ -->
+                    <div class="menu-item" data-category="อาหาร">
+                        <img src="https://inwfile.com/s-dp/4v633v.jpg" alt="แกงส้มกุ้ง">
+                        <div class="item-info"><h3>แกงส้มกุ้ง</h3><p>แกงส้มใต้รสจัดจ้าน เข้มข้นถึงใจ</p><span class="price">69.00 THB</span><button class="btn btn-secondary" onclick="openCustomization(this)"><i class="fas fa-shopping-cart"></i> เพิ่มลงตะกร้า</button></div>
+                    </div>
+                    <div class="menu-item" data-category="อาหาร">
+                        <img src="https://thejournalistclub.com/wp-content/uploads/2022/06/1-ข้าวกะเพรา-.jpeg" alt="กะเพราไก่">
+                        <div class="item-info"><h3>กะเพราไก่ไข่ดาว</h3><p>ผัดกะเพราหอมๆ เผ็ดร้อน พร้อมไข่ดาว</p><span class="price">50.00 THB</span><button class="btn btn-secondary" onclick="openCustomization(this)"><i class="fas fa-shopping-cart"></i> เพิ่มลงตะกร้า</button></div>
+                    </div>
+
+                    <!-- เมนูเครื่องดื่มหลัก -->
+                    <div class="menu-item" data-category="เครื่องดื่ม">
+                        <img src="https://www.kkday.com/th/blog/wp-content/uploads/Taiwan_Food-_Bubble-Tea_AShutterstock_409592239.jpg" alt="ชานมไข่มุก">
+                        <div class="item-info"><h3>ชานมไข่มุก</h3><p>ชานมไต้หวัน รสชาติเข้มข้น หอมกลิ่นชา</p><span class="price">39.00 THB</span><button class="btn btn-secondary" onclick="openCustomization(this)"><i class="fas fa-shopping-cart"></i> เพิ่มลงตะกร้า</button></div>
+                    </div>
+                    <div class="menu-item" data-category="เครื่องดื่ม">
+                        <img src="https://img.kapook.com/u/2024/sireeporn/Cooking-01/watermelon-smoothie-02.jpg" alt="แตงโมปั่น">
+                        <div class="item-info"><h3>แตงโมปั่น</h3><p>แตงโมสดชื่น ดับกระหาย</p><span class="price">35.00 THB</span><button class="btn btn-secondary" onclick="openCustomization(this)"><i class="fas fa-shopping-cart"></i> เพิ่มลงตะกร้า</button></div>
+                    </div>
+                    
+                    <!-- เมนูเครื่องดื่มใหม่ -->
+                    <div class="menu-item" data-category="เครื่องดื่ม">
+                        <img src="https://mabintea.com/wp-content/uploads/2022/11/ผงโกโก้ปั่น-โกโก้เข้มข้น-1024x904.jpg" alt="โกโก้">
+                        <div class="item-info"><h3>โกโก้</h3><p>โกโก้เข้มข้น หวานมัน กลมกล่อม</p><span class="price">39.00 THB</span><button class="btn btn-secondary" onclick="openCustomization(this)"><i class="fas fa-shopping-cart"></i> เพิ่มลงตะกร้า</button></div>
+                    </div>
+                    <div class="menu-item" data-category="เครื่องดื่ม">
+                        <img src="https://s.isanook.com/wo/0/ud/51/258753/iced-tea.jpg?ip/crop/w670h402/q80/jpg" alt="ชาเย็น">
+                        <div class="item-info"><h3>ชาเย็น</h3><p>ชาไทยรสชาติหอมเข้มข้น</p><span class="price">39.00 THB</span><button class="btn btn-secondary" onclick="openCustomization(this)"><i class="fas fa-shopping-cart"></i> เพิ่มลงตะกร้า</button></div>
+                    </div>
+                    <div class="menu-item" data-category="เครื่องดื่ม">
+                        <img src="https://image.makewebeasy.net/makeweb/m_1920x0/W7OuxZEpB/DefaultData/ชาและวัตถุดิบ_06.jpg?v=202405291424=ชาเขียว" alt="ชาเขียว">
+                        <div class="item-info"><h3>ชาเขียวนม</h3><p>ชาเขียวมัทฉะหอมนุ่ม</p><span class="price">39.00 THB</span><button class="btn btn-secondary" onclick="openCustomization(this)"><i class="fas fa-shopping-cart"></i> เพิ่มลงตะกร้า</button></div>
+                    </div>
+                    <div class="menu-item" data-category="เครื่องดื่ม">
+                        <img src="https://static.cdntap.com/tap-assets-prod/wp-content/uploads/sites/25/2022/02/grass-jelly-with-milk3.jpg" alt="เฉาก๊วยนมสด">
+                        <div class="item-info"><h3>เฉาก๊วยนมสด</h3><p>เฉาก๊วยเหนียวหนึบในนมสดเย็นๆ</p><span class="price">45.00 THB</span><button class="btn btn-secondary" onclick="openCustomization(this)"><i class="fas fa-shopping-cart"></i> เพิ่มลงตะกร้า</button></div>
+                    </div>
+
+                    <!-- เมนูของหวานหลัก -->
+                    <div class="menu-item" data-category="ของหวาน">
+                        <img src="https://blog.hungryhub.com/wp-content/uploads/2022/04/fresh-ripe-mango-sticky-rice-with-coconut-milk-dark-surface-1024x683.jpg" alt="ข้าวเหนียวมะม่วง">
+                        <div class="item-info"><h3>ข้าวเหนียวมะม่วง</h3><p>มะม่วงน้ำดอกไม้สุกหวาน กับข้าวเหนียวมูนกะทิ</p><span class="price">55.00 THB</span><button class="btn btn-secondary" onclick="openCustomization(this)"><i class="fas fa-shopping-cart"></i> เพิ่มลงตะกร้า</button></div>
+                    </div>
+                    
+                    <!-- เมนูของหวานใหม่ -->
+                    <div class="menu-item" data-category="ของหวาน">
+                        <img src="https://image.makewebcdn.com/makeweb/m_1920x0/I1MJQjJJO/MiniCake/Soft_Choc2.jpg" alt="เค้กช็อกโกแลต">
+                        <div class="item-info"><h3>เค้กช็อกโกแลต</h3><p>เค้กช็อกโกแลตเข้มข้น เนื้อนุ่ม</p><span class="price">55.00 THB</span><button class="btn btn-secondary" onclick="openCustomization(this)"><i class="fas fa-shopping-cart"></i> เพิ่มลงตะกร้า</button></div>
+                    </div>
+                    <div class="menu-item" data-category="ของหวาน">
+                        <img src="https://online32759.wordpress.com/wp-content/uploads/2023/02/e0b882e0b899e0b8a1e0b89ae0b8b1e0b8a7e0b8a5e0b8ade0b8a21.jpg?w=640=บัวลอย" alt="บัวลอย">
+                        <div class="item-info"><h3>บัวลอยน้ำกะทิ</h3><p>บัวลอยลูกเล็กสีสวย หวานมันกะทิ</p><span class="price">35.00 THB</span><button class="btn btn-secondary" onclick="openCustomization(this)"><i class="fas fa-shopping-cart"></i> เพิ่มลงตะกร้า</button></div>
                     </div>
                 </div>
+            </section>
+            
+            <aside class="cart-sidebar">
+                <h3>ตะกร้าสินค้า <span id="cart-count-text">(0 ชิ้น)</span></h3>
+                
+                <div class="cart-items" id="cart-items">
+                    <!-- Cart items will be rendered here by script.js -->
+                </div>
+
                 <div class="cart-summary">
-                    <p>รวมค่าใช้จ่าย: <span>465 THB</span></p>
-                    <button class="btn btn-checkout">ชำระเงิน</button>
+                    <p>ราคารวม: <span id="cart-total">0.00 THB</span></p>
+                    <button class="btn btn-checkout" onclick="goToCheckout()">สั่งซื้อและชำระเงิน</button>
                 </div>
             </aside>
         </div>
+        <!-- END: TWO-COLUMN CONTENT WRAPPER -->
+        
+        <!-- START: CONTACT FORM SECTION (Moved outside the content-wrapper to be full-width at the bottom) -->
+        <section class="contact-section" id="contact-section">
+            <h2><i class="fas fa-headset"></i> ติดต่อเรา</h2>
+            <p>เรายินดีรับฟังข้อเสนอแนะและตอบคำถามของคุณ</p>
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="contact-name">ชื่อ-นามสกุล:</label>
+                    <input type="text" id="contact-name" name="contactName" required minlength="3">
+                </div>
+                <div class="form-group">
+                    <label for="contact-email">อีเมล:</label>
+                    <input type="email" id="contact-email" name="contactEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="contact-message">ข้อความ:</label>
+                    <textarea id="contact-message" name="contactMessage" rows="5" required minlength="10"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-contact">ส่งข้อความ</button>
+                <p id="contact-message-status" style="margin-top: 10px;"></p>
+            </form>
+        </section>
+        <!-- END: CONTACT FORM SECTION -->
     </main>
+    
+    <!-- MODAL (Same as before) -->
+    <div id="customizationModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeCustomization()">&times;</span>
+            <h3 id="modal-item-title"></h3>
+            <p class="modal-item-price" id="modal-item-price"></p>
+            
+            <form id="customizationForm">
+                <input type="hidden" id="modal-item-category"> <input type="hidden" id="modal-original-price">
+
+                <div class="custom-group" id="group-food">
+                    <h4>🌶️ ระดับความเผ็ด</h4>
+                    <div class="option-group">
+                        <label><input type="radio" name="spiciness" value="ไม่เผ็ด" checked> ไม่เผ็ดเลย</label>
+                        <label><input type="radio" name="spiciness" value="เผ็ดน้อย"> เผ็ดน้อย</label>
+                        <label><input type="radio" name="spiciness" value="เผ็ดกลาง"> เผ็ดกลาง</label>
+                        <label><input type="radio" name="spiciness" value="เผ็ดมาก"> เผ็ดมาก</label>
+                    </div>
+                    
+                    <h4>➕ วัตถุดิบเพิ่มเติม/ปรับเปลี่ยน</h4>
+                    <div class="option-group checkbox-group">
+                        <label><input type="checkbox" name="addon" value="เพิ่มเพิ่มเนื้อสัตว์" data-price="15"> เพิ่มเนื้อสัตว์(กรุณาระบุที่ช่องคำขอ) (+15 THB)</label>
+                        <label><input type="checkbox" name="addon" value="พิเศษ" data-price="20"> พิเศษ (+20 THB)</label>
+                        <label><input type="checkbox" name="addon" value="ไม่ใส่เนื้อสัตว์"> ไม่ใส่เนื้อสัตว์</label>
+                        <label><input type="checkbox" name="addon" value="ไม่ใส่พริก"> ไม่ใส่ผัก</label>
+                    </div>
+                </div>
+
+                <div class="custom-group" id="group-drink">
+                    <h4>🍭 ระดับความหวาน</h4>
+                    <div class="option-group">
+                        <label><input type="radio" name="sweetness" value="หวานน้อย" checked> หวานน้อย (70%)</label>
+                        <label><input type="radio" name="sweetness" value="หวานปกติ"> หวานปกติ (100%)</label>
+                        <label><input type="radio" name="sweetness" value="ไม่หวานเลย"> ไม่หวานเลย (0%)</label>
+                    </div>
+                    <h4>⚫ ท็อปปิ้ง</h4>
+                    <div class="option-group checkbox-group">
+                        <label><input type="checkbox" name="topping" value="ไข่มุก" data-price="15"> เพิ่มไข่มุก (+15 THB)</label>
+                        <label><input type="checkbox" name="topping" value="วุ้นกาแฟ" data-price="10"> เพิ่มวุ้นกาแฟ (+10 THB)</label>
+                    </div>
+                </div>
+
+                <div class="custom-group" id="group-temp">
+                    <h4>🌡️ อุณหภูมิ</h4>
+                    <div class="option-group">
+                        <label><input type="radio" name="temp" value="เย็น" checked> เย็น</label>
+                        <label><input type="radio" name="temp" value="ร้อน"> ร้อน</label>
+                        <label><input type="radio" name="temp" value="ปั่น" data-price="10"> ปั่น (+10 THB)</label>
+                    </div>
+                </div>
+
+                <div class="custom-group" id="group-note">
+                    <h4>📝 คำขอ/หมายเหตุเพิ่มเติม</h4>
+                    <textarea id="special-notes" rows="3" placeholder="เช่น แพ้อาหาร, ต้องการซอสแยก, ขอช้อนเพิ่ม"></textarea>
+                </div>
+            </form>
+            
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="changeModalQuantity(-1)">-</button>
+                <span id="modal-quantity">1</span>
+                <button class="btn btn-secondary" onclick="changeModalQuantity(1)">+</button>
+                
+                <button class="btn btn-primary" onclick="confirmAddToCart()">
+                    เพิ่มลงตะกร้า | <span id="modal-final-price">0.00 THB</span>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <footer class="footer">
         <div class="footer-info">
-            <p>ที่อยู่: 123 ถนนศูนย์ดิน, กุรารตา</p>
-            <p>โทร: 02-XXX-XXXX</p>
-            <p>อีเมล: afeefah@ftu.ac.th</p>
+            <p>ที่อยู่: 123 โสร่ง, ปัตตานี 94160</p>
+            <p>โทร: 02-123-45678</p>
+            <p>อีเมล: contact@hiwjangg.com</p>
         </div>
+        <!-- START: VISITOR COUNTER DISPLAY -->
+        <div class="visitor-counter">
+            <p>ผู้เข้าชมเว็บไซต์: <span id="visitor-count-display">...</span></p>
+        </div>
+        <!-- END: VISITOR COUNTER DISPLAY -->
         <div class="social-media">
             <a href="#"><i class="fab fa-facebook-f"></i></a>
             <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-paypal"></i></a>
+            <a href="#"><i class="fab fa-line"></i></a>
         </div>
     </footer>
 
+    <script src="script.js"></script> 
 </body>
 </html>

@@ -1,0 +1,699 @@
+/* Import Fonts: เรียกใช้ฟอนต์ 'Prompt' จาก Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
+
+/* Global Styles: ตั้งค่าพื้นฐานสำหรับทั้งหน้าเว็บ */
+body {
+    font-family: 'Prompt', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa; /* สีพื้นหลังอ่อนๆ */
+    color: #343a40; /* สีตัวอักษรหลัก */
+    line-height: 1.6;
+}
+
+.main-container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+/* Header Styles: ส่วนหัวเว็บ */
+.header {
+    background-color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    position: sticky; /* ทำให้ Header ติดอยู่ด้านบนเมื่อเลื่อนลง */
+    top: 0;
+    z-index: 1000;
+}
+
+.header .logo a {
+    font-weight: 700;
+    font-size: 28px;
+    text-decoration: none;
+    color: #343a40;
+}
+
+.main-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.main-nav ul li a {
+    text-decoration: none;
+    color: #555;
+    padding: 10px 15px;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.main-nav ul li a:hover {
+    color: #ff6347; /* สีส้มแดง */
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.search-bar input {
+    border: 1px solid #ced4da;
+    padding: 8px 15px;
+    border-radius: 25px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.search-bar input:focus {
+    border-color: #ff6347;
+}
+
+.cart-icon {
+    position: relative;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.cart-count {
+    background-color: #ff6347;
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 50%;
+    padding: 2px 6px;
+    position: absolute;
+    top: -5px;
+    right: -10px;
+}
+
+/* Hero Section Styles: ส่วนโปรโมชั่น (ถูกแทนที่ด้วย Carousel) */
+/* โค้ดส่วนนี้ไม่ได้ใช้แล้ว แต่คงไว้เป็นตัวอย่าง */
+.hero-section {
+    display: none; 
+}
+
+/* Button Styles: รูปแบบปุ่ม */
+.btn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background-color: #ff6347;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #e55337;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background-color: #fff;
+    color: #ff6347;
+    border: 2px solid #ff6347;
+}
+
+.btn-secondary:hover {
+    background-color: #ff6347;
+    color: #fff;
+}
+
+.btn-checkout {
+    background-color: #ff6347;
+    color: #fff;
+    width: 100%;
+    margin-top: 15px;
+    font-size: 18px;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+/* Main Content Layout */
+.content-wrapper {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+.menu-section {
+    flex-grow: 1; /* ทำให้ส่วนเมนูขยายเต็มพื้นที่ที่เหลือ */
+}
+
+/* Menu Styles: ส่วนเมนูอาหาร */
+.menu-categories {
+    margin: 20px 0;
+    display: flex;
+    gap: 10px;
+}
+
+.category-btn {
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.category-btn.active, .category-btn:hover {
+    background-color: #ff6347;
+    color: #fff;
+    border-color: #ff6347;
+}
+
+.menu-items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* ทำให้เมนูปรับขนาดตามหน้าจอ */
+    gap: 20px;
+}
+
+.menu-item {
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    transition: transform 0.2s;
+}
+.menu-item:hover{
+    transform: translateY(-5px); /* ทำให้การ์ดลอยขึ้นเมื่อเมาส์ชี้ */
+}
+
+.menu-item img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.item-info {
+    padding: 15px;
+}
+
+.item-info h3 {
+    margin: 10px 0;
+}
+
+.item-info p {
+    color: #6c757d;
+    font-size: 0.9em;
+    min-height: 45px; /* กำหนดความสูงขั้นต่ำให้คำอธิบาย */
+}
+
+.item-info .price {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: #ff6347;
+    display: block;
+    margin-bottom: 15px;
+}
+
+/* Cart Sidebar Styles: ส่วนตะกร้าสินค้า */
+.cart-sidebar {
+    width: 350px;
+    min-width: 300px; /* ความกว้างขั้นต่ำ */
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 100px; /* ให้ตะกร้าเลื่อนตามเมื่อ Header สูง 80px + ระยะห่าง */
+}
+
+.cart-sidebar h3 {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-top: 0;
+}
+
+.cart-item {
+    display: flex;
+    align-items: flex-start; /* จัดเรียงด้านบน เพื่อรองรับรายละเอียดหลายบรรทัด */
+    margin-bottom: 15px;
+}
+
+.cart-item img {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    margin-right: 15px;
+    object-fit: cover;
+}
+
+/* 🟢 การแก้ไขปัญหาตัวอักษรล้นกรอบในตะกร้าสินค้า */
+.cart-item .item-details {
+    flex-grow: 1; /* ใช้พื้นที่ที่เหลืออย่างยืดหยุ่น */
+    overflow-wrap: break-word; /* คำที่ยาวเกินขอบจะถูกตัดขึ้นบรรทัดใหม่ */
+    word-wrap: break-word; 
+    min-width: 0; /* แก้ไขปัญหา Flexbox ไม่ยอมบีบข้อความยาว */
+}
+
+.cart-item .item-details .item-title {
+    display: block; 
+    font-weight: 600;
+}
+
+.cart-custom-details {
+    display: block; 
+    font-size: 0.8em;
+    color: #6c757d;
+    margin-top: 3px;
+    line-height: 1.3;
+    white-space: normal; /* ทำให้ข้อความปรับขึ้นบรรทัดใหม่ได้ */
+    word-break: break-all;
+}
+/* 🟢 สิ้นสุดการแก้ไขปัญหาตัวอักษรล้นกรอบ */
+
+
+.item-details h4 {
+    margin: 0;
+    font-size: 1.1em;
+}
+
+.item-details i.fa-sticky-note {
+    color: #ff6347;
+    margin-left: 5px;
+}
+
+.item-actions {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+    margin-left: 10px; /* เพิ่มระยะห่างจากรายละเอียด */
+    flex-shrink: 0; /* ป้องกันไม่ให้ปุ่มโดนบีบ */
+}
+
+.item-actions .btn-qty {
+    border: 1px solid #ced4da;
+    background: #f8f9fa;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 0;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.item-actions .btn-remove {
+    background: none;
+    border: none;
+    color: #dc3545;
+    font-size: 16px;
+    margin-left: 5px;
+    cursor: pointer;
+    padding: 0;
+}
+
+.cart-summary p {
+    font-weight: bold;
+    font-size: 1.1em;
+    display: flex;
+    justify-content: space-between;
+}
+
+
+/* Footer Styles: ส่วนท้ายเว็บ */
+.footer {
+    background-color: #343a40;
+    color: #fff;
+    padding: 30px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* ทำให้ปรับขนาดตามหน้าจอได้ */
+    gap: 20px;
+}
+
+.footer-info p {
+    margin: 5px 0;
+    font-size: 0.9em;
+    color: #adb5bd;
+}
+
+.social-media a {
+    color: #fff;
+    font-size: 22px;
+    margin-left: 15px;
+    transition: color 0.3s;
+}
+
+.social-media a:hover {
+    color: #ff6347;
+}
+
+/* ============================================== */
+/* MODAL / CUSTOMIZATION STYLES (สำหรับหน้าต่างรายละเอียด) */
+/* ============================================== */
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 3000; 
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5); 
+    justify-content: center; /* จัดให้อยู่ตรงกลางหน้าจอ */
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto; /* แทนที่ margin: 10% auto; */
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%; 
+    max-width: 500px; 
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+
+@keyframes animatetop {
+    from {top: -300px; opacity: 0}
+    to {top: 0; opacity: 1}
+}
+
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: #333;
+    text-decoration: none;
+}
+
+#modal-item-title {
+    color: #ff6347;
+    margin-top: 0;
+    font-size: 1.8em;
+}
+
+.modal-item-price {
+    font-size: 1.2em;
+    color: #6c757d;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.option-group {
+    margin-bottom: 15px;
+    padding: 10px 0;
+    border-bottom: 1px dashed #f1f1f1;
+}
+
+.option-group h4 {
+    margin: 0 0 10px 0;
+    color: #343a40;
+    font-size: 1em;
+    font-weight: 600;
+}
+
+.option-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 400;
+    cursor: pointer;
+    font-size: 0.95em;
+}
+
+.option-group input[type="radio"],
+.option-group input[type="checkbox"] {
+    margin-right: 8px;
+    transform: scale(1.1);
+}
+
+#customizationForm textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.modal-actions .qty-control {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.modal-actions .btn-qty {
+    background: #f8f9fa;
+    border: none;
+    width: 30px;
+    height: 35px;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1;
+}
+
+.modal-actions span#modal-quantity {
+    font-size: 1.1em;
+    font-weight: bold;
+    padding: 0 15px;
+    color: #ff6347;
+}
+
+.modal-actions .btn-primary {
+    padding: 10px 20px;
+}
+
+/* Toast Notification Styles: สำหรับแสดงข้อความแจ้งเตือนเมื่อเพิ่มลงตะกร้า */
+.toast { /* เปลี่ยนชื่อคลาสจาก .toast-notification */
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px); 
+    background-color: #28a745; 
+    color: white;
+    padding: 12px 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transition: all 0.5s ease-in-out;
+    z-index: 4000;
+    font-weight: 500;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0); 
+}
+
+/* -------------------------------------- */
+/* CSS สำหรับ Contact Form */
+/* -------------------------------------- */
+.contact-section {
+    padding: 60px 20px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    margin-top: 40px;
+    text-align: center;
+}
+
+.contact-section h2 {
+    color: #ff6347;
+    margin-bottom: 10px;
+}
+
+#contactForm {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.contact-section label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.contact-section input[type="text"],
+.contact-section input[type="email"],
+.contact-section textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.btn-contact {
+    background-color: #28a745;
+    color: #fff;
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1em;
+}
+
+#contact-message-status {
+    margin-top: 15px;
+    font-weight: 600;
+}
+
+/* -------------------------------------- */
+/* CSS สำหรับ Visitor Counter */
+/* -------------------------------------- */
+.visitor-counter {
+    background-color: #343a40;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: inline-block;
+    font-size: 0.9em;
+    margin-top: 10px;
+}
+
+/* -------------------------------------- */
+/* CSS สำหรับ Carousel (Single Slide Hero Section) */
+/* -------------------------------------- */
+.carousel-container {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 400px; 
+    border-radius: 10px;
+    margin-bottom: 40px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.carousel-inner {
+    display: flex;
+    transition: transform 0.6s ease-in-out;
+    height: 100%;
+    width: 100%; /* 🟢 แก้ไข: ใช้ 100% สำหรับ 1 สไลด์ */
+}
+
+.carousel-slide {
+    flex: 0 0 100%; /* 🟢 แก้ไข: ใช้ 100% สำหรับ 1 สไลด์ */
+    position: relative;
+    text-align: center;
+    height: 100%;
+}
+
+.carousel-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Hero Content overlay */
+.carousel-container .hero-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 20px 40px;
+    border-radius: 10px;
+    max-width: 90%;
+}
+
+.carousel-container h1 {
+    font-size: 3em;
+    margin-bottom: 10px;
+    color: #ffcc00; 
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.carousel-container p {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+/* Controls & Indicators: ถูกซ่อนเพราะเหลือสไลด์เดียว */
+.carousel-control, .carousel-indicators {
+    display: none;
+}
+
+
+/* Responsive for all sections */
+@media (max-width: 1024px) {
+    .content-wrapper {
+        flex-direction: column;
+    }
+    .cart-sidebar {
+        width: 100%;
+        position: relative;
+        top: 0;
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px 20px;
+    }
+    .main-nav ul {
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+    .header-actions {
+        width: 100%;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+    .main-container {
+        margin: 20px auto;
+    }
+    .carousel-container {
+        height: 250px;
+    }
+    .carousel-container h1 {
+        font-size: 1.8em;
+    }
+    .carousel-container p {
+        font-size: 1em;
+    }
+    .menu-items-grid {
+        grid-template-columns: 1fr;
+    }
+    .footer {
+        text-align: center;
+        justify-content: center;
+    }
+}

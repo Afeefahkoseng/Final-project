@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สถานะคำสั่งซื้อ | Hiw jangg</title>
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* CSS สำหรับจัดรูปแบบหน้าสถานะคำสั่งซื้อ */
+        .status-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+        .status-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .status-display {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: #ff6347; 
+            margin-top: 10px;
+        }
+        /* จัดเรียงขั้นตอนสถานะ */
+        .status-steps {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            padding: 0 20px;
+            position: relative;
+        }
+        /* เส้นเชื่อมระหว่างขั้นตอน */
+        .status-steps::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            right: 10%;
+            height: 4px;
+            background: #eee;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+        .step {
+            text-align: center;
+            flex: 1;
+            position: relative;
+            z-index: 2;
+        }
+        /* ไอคอนวงกลมแสดงขั้นตอน */
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            background: #eee;
+            color: #fff;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            transition: all 0.5s ease;
+        }
+        /* สถานะที่กำลังดำเนินการ */
+        .step.active .step-icon {
+            background: #28a745; 
+        }
+        .step.active p {
+            font-weight: 600;
+            color: #ff6347;
+        }
+        /* สรุปรายละเอียดออเดอร์ */
+        .order-details-summary h3 {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            color: #343a40;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-size: 0.95em;
+        }
+        .item-list {
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee;
+            flex-wrap: wrap; 
+        }
+        .item-row strong {
+            font-weight: 500;
+        }
+        /* รายละเอียดการปรับแต่ง/หมายเหตุ */
+        .item-note {
+            display: block;
+            font-size: 0.8em;
+            color: #6c757d;
+        }
+        .btn-back-home {
+            margin-top: 30px;
+            padding: 12px 25px;
+            width: 100%;
+            background-color: #ff6347;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .status-steps {
+                flex-direction: column;
+                align-items: center;
+            }
+            .status-steps::before {
+                display: none;
+            }
+            .step {
+                margin-bottom: 20px;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo"><a href="index.html">Hiw jangg</a></div>
+    </header>
+
+    <div class="status-container">
+        <div class="status-header">
+            <h2>สถานะคำสั่งซื้อ #<span id="order-id">1001</span></h2>
+            <p>สถานะปัจจุบัน:</p>
+            <div class="status-display" id="current-status-text">...</div>
+        </div>
+        
+        <div class="status-steps">
+            <div class="step active" id="step-1">
+                <div class="step-icon"><i class="fas fa-check"></i></div>
+                <p>รับคำสั่งซื้อ</p>
+            </div>
+            <div class="step" id="step-2">
+                <div class="step-icon"><i class="fas fa-utensils"></i></div>
+                <p>กำลังจัดทำ</p>
+            </div>
+            <div class="step" id="step-3">
+                <div class="step-icon"><i class="fas fa-motorcycle"></i></div>
+                <p>ไรเดอร์กำลังรับ</p>
+            </div>
+            <div class="step" id="step-4">
+                <div class="step-icon"><i class="fas fa-home"></i></div>
+                <p>กำลังจัดส่ง</p>
+            </div>
+        </div>
+
+        <div class="order-details-summary">
+            <h3>รายละเอียดคำสั่งซื้อ</h3>
+            <div class="detail-row">
+                <span>ชื่อผู้สั่ง:</span>
+                <span id="detail-name">...</span>
+            </div>
+            <div class="detail-row">
+                <span>ที่อยู่:</span>
+                <span id="detail-address">...</span>
+            </div>
+            <div class="detail-row">
+                <span>เบอร์โทร:</span>
+                <span id="detail-phone">...</span>
+            </div>
+            <div class="detail-row">
+                <span>รวมยอดชำระ:</span>
+                <span id="detail-total" style="font-weight: bold; color: #ff6347;">...</span>
+            </div>
+
+            <div class="item-list" id="order-item-list">
+                <h4>รายการสินค้าที่สั่ง:</h4>
+                </div>
+        </div>
+
+        <button class="btn btn-back-home" onclick="window.location.href='index.html'">กลับสู่หน้าหลัก</button>
+    </div>
+
+    <script>
+        // กำหนดขั้นตอนสถานะทั้งหมด
+        const statusSteps = ['กำลังรับคำสั่งซื้อ', 'กำลังจัดทำ', 'ไรเดอร์กำลังรับ', 'กำลังจัดส่ง'];
+        // อ้างอิงถึงองค์ประกอบขั้นตอนใน HTML
+        const stepElements = [
+            document.getElementById('step-1'),
+            document.getElementById('step-2'),
+            document.getElementById('step-3'),
+            document.getElementById('step-4')
+        ];
+        
+        // ฟังก์ชันหลักสำหรับโหลดและแสดงสถานะคำสั่งซื้อ
+        function loadOrderStatus() {
+            // ดึงข้อมูลออเดอร์ล่าสุดจาก LocalStorage (ใช้ Key เดิม 'lastOrder')
+            const orderData = JSON.parse(localStorage.getItem('lastOrder'));
+            // ดึงสถานะปัจจุบัน (ใช้ Key เดิม 'orderStatus')
+            let currentStatus = localStorage.getItem('orderStatus') || statusSteps[0];
+            
+            // ถ้าไม่พบข้อมูลออเดอร์ ให้แสดงข้อความแจ้งเตือน
+            if (!orderData || Object.keys(orderData.orderItems).length === 0) {
+                document.querySelector('.status-container').innerHTML = '<h2>ไม่พบข้อมูลคำสั่งซื้อล่าสุด</h2><p>กรุณาทำการสั่งซื้ออีกครั้งเพื่อติดตามสถานะ</p><button class="btn btn-back-home" onclick="window.location.href=\'index.html\'">กลับไปสั่งอาหาร</button>';
+                return;
+            }
+
+            // 1. แสดงข้อมูลรายละเอียดการจัดส่ง
+            document.getElementById('detail-name').textContent = orderData.name;
+            document.getElementById('detail-address').textContent = orderData.address.substring(0, 40) + (orderData.address.length > 40 ? '...' : ''); 
+            document.getElementById('detail-phone').textContent = orderData.phone;
+            document.getElementById('detail-total').textContent = orderData.total;
+            document.getElementById('order-id').textContent = '1001'; // ID จำลอง
+
+            // 2. แสดงรายการสินค้า
+            const itemListContainer = document.getElementById('order-item-list');
+            let itemHTML = '<h4>รายการสินค้าที่สั่ง:</h4>';
+            
+            // วนลูปแสดงรายการสินค้าที่สั่ง
+            for (const itemKey in orderData.orderItems) { 
+                const item = orderData.orderItems[itemKey];
+                const itemTotal = item.price * item.quantity;
+                
+                // สร้างรายละเอียดการปรับแต่งทั้งหมด
+                const customizations = [];
+                if (item.customization) {
+                    if (item.customization.spiciness) customizations.push(`เผ็ด: ${item.customization.spiciness}`);
+                    if (item.customization.addons && item.customization.addons.length > 0) customizations.push(`เพิ่ม: ${item.customization.addons.join(', ')}`);
+                    if (item.customization.sweetness) customizations.push(`หวาน: ${item.customization.sweetness}`); 
+                    if (item.customization.topping && item.customization.topping.length > 0) customizations.push(`ท็อปปิ้ง: ${item.customization.topping.join(', ')}`);
+                    if (item.customization.temp) customizations.push(`อุณหภูมิ: ${item.customization.temp}`);
+                }
+                const customText = customizations.length > 0 ? `<span class="item-note"> | ${customizations.join(', ')}</span>` : '';
+
+                // ดึงหมายเหตุเฉพาะของสินค้านั้น
+                const notes = (item.customization && item.customization.notes && item.customization.notes.length > 0) ? 
+                              `<span class="item-note"> (หมายเหตุ: ${item.customization.notes})</span>` : '';
+                
+                // สร้าง HTML สำหรับรายการสินค้า
+                itemHTML += `
+                    <div class="item-row">
+                        <span>
+                            ${item.quantity}x ${item.title} 
+                            ${customText} 
+                            ${notes}
+                        </span>
+                        <strong>${itemTotal.toFixed(2)} THB</strong>
+                    </div>
+                `;
+            }
+            itemListContainer.innerHTML = itemHTML;
+
+            // 3. อัปเดตสถานะการแสดงผล
+            updateStatusDisplay(currentStatus);
+
+            // 4. ตั้งเวลาจำลองการอัปเดตสถานะ
+            simulateStatusUpdate(currentStatus);
+        }
+
+        // ฟังก์ชันสำหรับอัปเดตการแสดงผลสถานะ (เปลี่ยนสีไอคอน)
+        function updateStatusDisplay(status) {
+            document.getElementById('current-status-text').textContent = status;
+            const currentIndex = statusSteps.indexOf(status);
+            
+            stepElements.forEach((step, index) => {
+                step.classList.remove('active');
+                if (index <= currentIndex) {
+                    step.classList.add('active');
+                    if (index === currentIndex) {
+                        // สถานะปัจจุบัน: สีเขียว
+                        step.querySelector('.step-icon').style.background = '#28a745';
+                    } else {
+                        // สถานะที่ผ่านมาแล้ว: สีน้ำเงิน
+                        step.querySelector('.step-icon').style.background = '#007bff'; 
+                    }
+                } else {
+                    // สถานะที่ยังมาไม่ถึง: สีเทา
+                    step.querySelector('.step-icon').style.background = '#eee';
+                }
+            });
+        }
+
+        // ฟังก์ชันสำหรับจำลองการเปลี่ยนแปลงสถานะ (ใช้สำหรับเดโมเท่านั้น)
+        function simulateStatusUpdate(currentStatus) {
+            let currentIndex = statusSteps.indexOf(currentStatus);
+            // ตรวจสอบว่ายังมีสถานะถัดไปหรือไม่
+            if (currentIndex < statusSteps.length - 1) {
+                
+                const delay = 10000; // จำลองการอัปเดตสถานะถัดไปใน 10 วินาที
+                
+                setTimeout(() => {
+                    currentIndex++;
+                    const nextStatus = statusSteps[currentIndex];
+                    localStorage.setItem('orderStatus', nextStatus); // บันทึกสถานะใหม่ลง LocalStorage
+                    updateStatusDisplay(nextStatus);
+                    
+                    if (currentIndex === statusSteps.length - 1) {
+                        alert(`🎉 คำสั่งซื้อของคุณ ${nextStatus} แล้ว! โปรดเตรียมรับสินค้า`);
+                    }
+                    
+                    // เรียกฟังก์ชันซ้ำเพื่อจำลองสถานะถัดไป
+                    simulateStatusUpdate(nextStatus); 
+                }, delay);
+            }
+        }
+
+        // เริ่มต้นการโหลดสถานะเมื่อหน้าเว็บโหลดเสร็จ
+        document.addEventListener('DOMContentLoaded', loadOrderStatus);
+    </script>
+</body>
+</html>
