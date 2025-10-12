@@ -149,7 +149,7 @@
         
         <div class="status-steps">
             <div class="step active" id="step-1">
-                <div class="step-icon"><i class="fas fa-check"></i></div>
+                <div class="step-icon"><i class="fas fa-clipboard-check"></i></div>
                 <p>รับคำสั่งซื้อ</p>
             </div>
             <div class="step" id="step-2">
@@ -207,18 +207,20 @@
         // ฟังก์ชันหลักสำหรับโหลดและแสดงสถานะคำสั่งซื้อ
         function loadOrderStatus() {
             // ดึงข้อมูลออเดอร์ล่าสุดจาก LocalStorage (ใช้ Key เดิม 'lastOrder')
-            const orderData = JSON.parse(localStorage.getItem('lastOrder'));
+            const orderDataString = localStorage.getItem('lastOrder');
+            const orderData = orderDataString ? JSON.parse(orderDataString) : null;
             // ดึงสถานะปัจจุบัน (ใช้ Key เดิม 'orderStatus')
             let currentStatus = localStorage.getItem('orderStatus') || statusSteps[0];
             
             // ถ้าไม่พบข้อมูลออเดอร์ ให้แสดงข้อความแจ้งเตือน
-            if (!orderData || Object.keys(orderData.orderItems).length === 0) {
+            if (!orderData || !orderData.orderItems || orderData.orderItems.length === 0) {
                 document.querySelector('.status-container').innerHTML = '<h2>ไม่พบข้อมูลคำสั่งซื้อล่าสุด</h2><p>กรุณาทำการสั่งซื้ออีกครั้งเพื่อติดตามสถานะ</p><button class="btn btn-back-home" onclick="window.location.href=\'index.html\'">กลับไปสั่งอาหาร</button>';
                 return;
             }
 
             // 1. แสดงข้อมูลรายละเอียดการจัดส่ง
             document.getElementById('detail-name').textContent = orderData.name;
+            // ปรับการแสดงที่อยู่ให้ไม่ยาวเกินไป
             document.getElementById('detail-address').textContent = orderData.address.substring(0, 40) + (orderData.address.length > 40 ? '...' : ''); 
             document.getElementById('detail-phone').textContent = orderData.phone;
             document.getElementById('detail-total').textContent = orderData.total;
@@ -229,24 +231,31 @@
             let itemHTML = '<h4>รายการสินค้าที่สั่ง:</h4>';
             
             // วนลูปแสดงรายการสินค้าที่สั่ง
-            for (const itemKey in orderData.orderItems) { 
-                const item = orderData.orderItems[itemKey];
-                const itemTotal = item.price * item.quantity;
+            orderData.orderItems.forEach(item => { 
+                
+                // 🟢 การแก้ไขสำคัญ: แปลง finalPrice จาก String (ใน LocalStorage) เป็น Float ก่อนนำมาคูณ
+                const finalPrice = parseFloat(item.finalPrice);
+                
+                // 🟢 คำนวณราคารวมต่อรายการ (ป้องกัน NaN)
+                // ตรวจสอบว่าเป็นตัวเลขที่ถูกต้องหรือไม่ ถ้าไม่ใช่ ให้แสดง 'ERR'
+                const itemTotal = !isNaN(finalPrice) ? (finalPrice * item.quantity) : 0; 
                 
                 // สร้างรายละเอียดการปรับแต่งทั้งหมด
                 const customizations = [];
+                // วนลูปผ่าน customization object
                 if (item.customization) {
-                    if (item.customization.spiciness) customizations.push(`เผ็ด: ${item.customization.spiciness}`);
-                    if (item.customization.addons && item.customization.addons.length > 0) customizations.push(`เพิ่ม: ${item.customization.addons.join(', ')}`);
-                    if (item.customization.sweetness) customizations.push(`หวาน: ${item.customization.sweetness}`); 
-                    if (item.customization.topping && item.customization.topping.length > 0) customizations.push(`ท็อปปิ้ง: ${item.customization.topping.join(', ')}`);
-                    if (item.customization.temp) customizations.push(`อุณหภูมิ: ${item.customization.temp}`);
+                    for (const key in item.customization) {
+                        const value = item.customization[key];
+                        if (value && key !== 'note') { // ไม่แสดง 'note' ในรายละเอียดสั้น ๆ
+                            customizations.push(value);
+                        }
+                    }
                 }
                 const customText = customizations.length > 0 ? `<span class="item-note"> | ${customizations.join(', ')}</span>` : '';
 
                 // ดึงหมายเหตุเฉพาะของสินค้านั้น
-                const notes = (item.customization && item.customization.notes && item.customization.notes.length > 0) ? 
-                              `<span class="item-note"> (หมายเหตุ: ${item.customization.notes})</span>` : '';
+                const notes = (item.customization && item.customization.note) ? 
+                              `<span class="item-note"> (หมายเหตุ: ${item.customization.note})</span>` : '';
                 
                 // สร้าง HTML สำหรับรายการสินค้า
                 itemHTML += `
@@ -256,10 +265,10 @@
                             ${customText} 
                             ${notes}
                         </span>
-                        <strong>${itemTotal.toFixed(2)} THB</strong>
+                        <strong>${!isNaN(itemTotal) ? itemTotal.toFixed(2) : 'NaN'} THB</strong>
                     </div>
                 `;
-            }
+            });
             itemListContainer.innerHTML = itemHTML;
 
             // 3. อัปเดตสถานะการแสดงผล
@@ -279,10 +288,10 @@
                 if (index <= currentIndex) {
                     step.classList.add('active');
                     if (index === currentIndex) {
-                        // สถานะปัจจุบัน: สีเขียว
+                        // สถานะปัจจุบัน: สีเขียว (Active)
                         step.querySelector('.step-icon').style.background = '#28a745';
                     } else {
-                        // สถานะที่ผ่านมาแล้ว: สีน้ำเงิน
+                        // สถานะที่ผ่านมาแล้ว: สีน้ำเงิน (Completed)
                         step.querySelector('.step-icon').style.background = '#007bff'; 
                     }
                 } else {
@@ -307,6 +316,7 @@
                     updateStatusDisplay(nextStatus);
                     
                     if (currentIndex === statusSteps.length - 1) {
+                        // 🟢 เปลี่ยนข้อความ Alert ให้ดูดีขึ้น
                         alert(`🎉 คำสั่งซื้อของคุณ ${nextStatus} แล้ว! โปรดเตรียมรับสินค้า`);
                     }
                     
