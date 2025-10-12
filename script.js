@@ -22,7 +22,8 @@ const saveCart = () => {
 const loadCart = () => {
     try {
         const storedCart = localStorage.getItem(CART_STORAGE_KEY);
-        cart = storedCart ? JSON.parse(storedCart) : [];
+        // แก้ไข: cart ต้องเป็น Array เมื่อไม่มีข้อมูล เพื่อให้ .length ทำงานได้ถูกต้อง
+        cart = storedCart ? JSON.parse(storedCart) : []; 
     } catch (e) {
         console.error("Error loading cart from Local Storage:", e);
         cart = []; // หากเกิดข้อผิดพลาดให้เริ่มตะกร้าว่าง
@@ -33,14 +34,36 @@ const loadCart = () => {
 // 3. ฟังก์ชันจัดการการแสดงผลตะกร้าสินค้า (Cart Rendering)
 // ===============================================
 
+/**
+ * ฟังก์ชันคำนวณราคารวมทั้งหมดของสินค้าในตะกร้า
+ * @returns {number} ราคารวมทั้งหมด
+ */
+const calculateGrandTotal = () => {
+    let grandTotal = 0;
+    cart.forEach(item => {
+        // **สำคัญ:** ใช้ parseFloat เพื่อให้แน่ใจว่า finalPrice เป็นตัวเลขสำหรับการคำนวณ
+        const price = parseFloat(item.finalPrice) || 0; 
+        grandTotal += price * item.quantity;
+    });
+    return grandTotal;
+};
+
 const renderCart = () => {
     const cartItemsContainer = document.getElementById('cart-items');
     const cartTotalElement = document.getElementById('cart-total');
     const cartCountElement = document.querySelector('.cart-count');
     const cartCountTextElement = document.getElementById('cart-count-text');
     
-    if (!cartItemsContainer || !cartTotalElement || !cartCountElement || !cartCountTextElement) return;
+    // 🟢 การแก้ไข: ตรวจสอบว่า Element หลักของ index.html มีอยู่หรือไม่
+    if (!cartItemsContainer || !cartTotalElement || !cartCountElement || !cartCountTextElement) {
+        // ถ้า Element หายไป (แสดงว่าไม่ได้อยู่ใน index.html) ให้ตรวจสอบและเรียกใช้ฟังก์ชันสำหรับ Checkout
+        if (document.getElementById('checkout-summary-list')) {
+            renderCheckoutCart();
+        }
+        return;
+    }
 
+    // ส่วนนี้จะทำงานเฉพาะเมื่ออยู่ใน index.html เท่านั้น
     cartItemsContainer.innerHTML = '';
     let total = 0;
     let itemCount = 0;
@@ -49,7 +72,8 @@ const renderCart = () => {
         cartItemsContainer.innerHTML = '<p class="cart-empty-message">ตะกร้าสินค้าว่างเปล่า</p>';
     } else {
         cart.forEach((item, index) => {
-            const itemPrice = parseFloat(item.finalPrice);
+            // **สำคัญ:** ใช้ parseFloat เพื่อให้แน่ใจว่า finalPrice เป็นตัวเลข
+            const itemPrice = parseFloat(item.finalPrice) || 0; 
             const subtotal = itemPrice * item.quantity;
             total += subtotal;
             itemCount += item.quantity;
@@ -62,10 +86,19 @@ const renderCart = () => {
             if (item.customization) {
                 for (const key in item.customization) {
                     if (item.customization[key]) {
-                        customizationDetails += `<p class="cart-custom-detail">${item.customization[key]}</p>`;
+                        // ไม่แสดง 'note' ในรายละเอียดสั้น ๆ ของตะกร้าด้านข้าง
+                        if (key !== 'note') { 
+                            customizationDetails += `<p class="cart-custom-detail">${item.customization[key]}</p>`;
+                        }
                     }
                 }
             }
+            
+            // เพิ่มหมายเหตุ (ถ้ามี)
+            if (item.customization && item.customization.note) {
+                 customizationDetails += `<p class="cart-custom-detail"><i class="fas fa-sticky-note"></i> ${item.customization.note}</p>`;
+            }
+
 
             itemElement.innerHTML = `
                 <div>
@@ -75,22 +108,79 @@ const renderCart = () => {
                 </div>
                 <div class="cart-item-actions">
                     <div class="cart-quantity-controls">
-                        <button onclick="changeCartQuantity(${index}, -1)">-</button>
-                        <span>${item.quantity}</span>
-                        <button onclick="changeCartQuantity(${index}, 1)">+</button>
+                        <button class="btn-qty btn-minus" onclick="changeCartQuantity(${index}, -1)">-</button>
+                        <span class="qty-display">${item.quantity}</span>
+                        <button class="btn-qty btn-plus" onclick="changeCartQuantity(${index}, 1)">+</button>
                     </div>
-                    <button class="cart-remove-btn" onclick="removeItemFromCart(${index})">ลบ</button>
+                    <button class="btn-remove" onclick="removeItemFromCart(${index})"><i class="fas fa-trash-alt"></i></button>
                 </div>
             `;
             cartItemsContainer.appendChild(itemElement);
         });
     }
 
-    cartTotalElement.textContent = `${total.toFixed(2)} THB`;
+    // ใช้ calculateGrandTotal() เพื่อคำนวณราคารวมทั้งหมด
+    const grandTotal = calculateGrandTotal();
+
+    cartTotalElement.textContent = `${grandTotal.toFixed(2)} THB`;
     cartCountElement.textContent = itemCount;
     cartCountTextElement.textContent = `(${itemCount} ชิ้น)`;
     saveCart();
 };
+
+// ===============================================
+// 3.1 ฟังก์ชันจัดการการแสดงผลในหน้า Checkout (NEW)
+// ===============================================
+
+const renderCheckoutCart = () => {
+    const summaryList = document.getElementById('checkout-summary-list');
+    const totalAmountElement = document.getElementById('checkout-total-amount');
+
+    if (!summaryList || !totalAmountElement) return;
+
+    summaryList.innerHTML = ''; // ล้างรายการเดิม
+    
+    if (cart.length === 0) {
+        summaryList.innerHTML = '<p class="text-muted" style="text-align: center;">ไม่มีรายการสินค้าในตะกร้า</p>';
+    } else {
+        cart.forEach(item => {
+            const itemElement = document.createElement('div');
+            itemElement.classList.add('summary-item'); 
+            
+            // สรุป Customization สำหรับ Checkout
+            let details = [];
+            if (item.customization) {
+                 for (const key in item.customization) {
+                     if (item.customization[key]) {
+                        details.push(item.customization[key]);
+                     }
+                 }
+            }
+            const detailsHtml = details.length > 0 ? `<span class="summary-customization text-secondary">(${details.join(' | ')})</span>` : '';
+
+            
+            // ใช้ item.finalPrice (ราคาต่อชิ้น)
+            const itemPrice = parseFloat(item.finalPrice) || 0; 
+            const subtotal = itemPrice * item.quantity;
+            
+            itemElement.innerHTML = `
+                <div class="summary-item-details">
+                    <span>${item.quantity} x ${item.title}</span>
+                    ${detailsHtml}
+                </div>
+                <div class="summary-item-price">
+                    ${subtotal.toFixed(2)} THB
+                </div>
+            `;
+            summaryList.appendChild(itemElement);
+        });
+    }
+
+    // คำนวณราคารวมทั้งหมด
+    const grandTotal = calculateGrandTotal();
+    totalAmountElement.textContent = `${grandTotal.toFixed(2)} THB`;
+};
+
 
 // ===============================================
 // 4. ฟังก์ชันจัดการการคลิกในตะกร้าสินค้า
@@ -130,9 +220,11 @@ const getAncestorData = (element, className, dataName) => {
     let current = element;
     while (current) {
         if (current.classList && current.classList.contains(className)) {
+            // **แก้ไข:** ทำให้มั่นใจว่าราคาเป็นตัวเลขตั้งแต่ต้น
+            const priceText = current.querySelector('.price').textContent.replace(' THB', '').replace(',', '');
             return {
                 title: current.querySelector('h3').textContent,
-                price: parseFloat(current.querySelector('.price').textContent.replace(' THB', '')),
+                price: parseFloat(priceText) || 0, // แปลงเป็น float ตั้งแต่ตรงนี้
                 category: current.getAttribute('data-category')
             };
         }
@@ -190,8 +282,9 @@ const calculateFinalPrice = () => {
     // Check all checkbox and radio inputs for price additions
     form.querySelectorAll('input[type="checkbox"]:checked, input[type="radio"]:checked').forEach(input => {
         const priceAttr = input.getAttribute('data-price');
+        // **สำคัญ:** ตรวจสอบและแปลง data-price เป็นตัวเลข
         if (priceAttr) {
-            addonPrice += parseFloat(priceAttr);
+            addonPrice += parseFloat(priceAttr) || 0;
         }
     });
 
@@ -210,7 +303,7 @@ const changeModalQuantity = (delta) => {
 const confirmAddToCart = () => {
     if (!currentModalItem) return;
 
-    const finalPrice = calculateFinalPrice() / modalQuantity; // Price per unit
+    const finalPricePerUnit = calculateFinalPrice() / modalQuantity; // Price per unit
     const form = document.getElementById('customizationForm');
     
     // 1. Get Customization Details
@@ -219,7 +312,7 @@ const confirmAddToCart = () => {
 
     // Food Customization
     if (category === 'อาหาร' || category === 'ขายดี') {
-        customization.spiciness = form.querySelector('input[name="spiciness"]:checked')?.value || 'ปกติ';
+        customization.spiciness = form.querySelector('input[name="spiciness"]:checked')?.value || 'ไม่ระบุ';
         
         const selectedAddons = Array.from(form.querySelectorAll('input[name="addon"]:checked'))
             .map(input => input.value);
@@ -230,8 +323,8 @@ const confirmAddToCart = () => {
 
     // Drink Customization
     if (category === 'เครื่องดื่ม') {
-        customization.sweetness = form.querySelector('input[name="sweetness"]:checked')?.value || 'ปกติ';
-        customization.temp = form.querySelector('input[name="temp"]:checked')?.value || 'เย็น';
+        customization.sweetness = form.querySelector('input[name="sweetness"]:checked')?.value || 'ไม่ระระบุ';
+        customization.temp = form.querySelector('input[name="temp"]:checked')?.value || 'ไม่ระบุ';
 
         const selectedToppings = Array.from(form.querySelectorAll('input[name="topping"]:checked'))
             .map(input => input.value);
@@ -252,7 +345,8 @@ const confirmAddToCart = () => {
         title: currentModalItem.title,
         quantity: modalQuantity,
         originalPrice: currentModalItem.price,
-        finalPrice: finalPrice, // ราคาต่อชิ้นรวม Addon/Option
+        // **สำคัญ:** finalPrice ถูกเก็บเป็นตัวเลข (Float) แล้ว
+        finalPrice: finalPricePerUnit, 
         customization: customization
     });
 
@@ -325,7 +419,6 @@ const searchMenu = () => {
 // ===============================================
 
 const showInfoPage = (pageName) => {
-    alert(`คุณต้องการไปยังหน้า: ${pageName}`);
     // ในการพัฒนาจริง ฟังก์ชันนี้จะนำไปหน้า HTML/Route อื่น ๆ เช่น /cart, /home
     // สำหรับตอนนี้ มันคือการแจ้งเตือนแทนการนำทาง
     if (pageName === 'ตะกร้าสินค้า') {
@@ -370,6 +463,8 @@ const slidesData = [
 const renderSlides = () => {
     const container = document.getElementById('carousel-inner');
     const indicatorsContainer = document.getElementById('carousel-indicators');
+    if (!container || !indicatorsContainer) return; // เพิ่มการตรวจสอบ
+
     container.innerHTML = '';
     indicatorsContainer.innerHTML = '';
 
@@ -405,13 +500,20 @@ const showSlides = (n) => {
     if (n >= slides.length) { slideIndex = 0 }
     if (n < 0) { slideIndex = slides.length - 1 }
 
-    slides.forEach((slide, index) => {
-        slide.style.display = 'none';
-        indicators[index].classList.remove('active');
+    // ซ่อนสไลด์ทั้งหมดก่อน
+    const container = document.getElementById('carousel-inner');
+    if (container) {
+        // ต้องปรับตำแหน่ง transform ให้เป็น percent ของสไลด์ที่ต้องการแสดง
+        container.style.transform = `translateX(-${slideIndex * 100}%)`; 
+    }
+
+    indicators.forEach((indicator, index) => {
+        indicator.classList.remove('active');
+        if (index === slideIndex) {
+            indicator.classList.add('active');
+        }
     });
 
-    slides[slideIndex].style.display = 'block';
-    indicators[slideIndex].classList.add('active');
 };
 
 const nextSlide = () => {
@@ -428,8 +530,10 @@ const currentSlide = (n) => {
 };
 
 // ตั้งค่าให้สไลด์เปลี่ยนอัตโนมัติทุก 5 วินาที
+let autoSlideInterval;
 const startAutoSlide = () => {
-    setInterval(nextSlide, 5000);
+    if (autoSlideInterval) clearInterval(autoSlideInterval);
+    autoSlideInterval = setInterval(nextSlide, 5000);
 };
 
 
@@ -458,31 +562,36 @@ const initializeVisitorCounter = () => {
 
 document.addEventListener('DOMContentLoaded', () => {
     loadCart();
-    renderCart();
-    filterMenu('ขายดี', document.querySelector('.category-btn.active')); // แสดงเมนูขายดีเริ่มต้น
     
-    // 🟢 โค้ดที่แก้ไขและเพิ่มเข้ามา: จัดการการคลิกที่ลิงก์ 'เมนู' ใน nav bar 
-    const navMenuLink = document.querySelector('.main-nav a[onclick^="filterMenu"]');
-    if (navMenuLink) {
-        navMenuLink.addEventListener('click', (event) => {
-            event.preventDefault(); // ป้องกันการกระโดดของลิงก์ #
-            // หาปุ่ม 'ขายดี' ในส่วนเมนูเพื่อส่งไปในฟังก์ชัน filterMenu
-            const bestSellerButton = document.querySelector('.category-btn[data-category="ขายดี"]');
-            
-            // เรียกใช้ filterMenu โดยใช้ 'ขายดี' เป็นหมวดหมู่ และส่ง element ที่ถูกคลิก (ลิงก์) ไป
-            filterMenu('ขายดี', navMenuLink); 
-        });
+    // 🟢 แก้ไข: เรียก renderCart() เพื่อให้ฟังก์ชันมีการตรวจสอบหน้า
+    renderCart(); 
+
+    // Initializations ที่เกี่ยวข้องกับ index.html
+    const menuSection = document.querySelector('.menu-section');
+    if (menuSection) { // ตรวจสอบว่าอยู่ในหน้า index.html หรือไม่
+        filterMenu('ขายดี', document.querySelector('.category-btn.active')); // แสดงเมนูขายดีเริ่มต้น
+        
+        // จัดการการคลิกที่ลิงก์ 'เมนู' ใน nav bar 
+        const navMenuLink = document.querySelector('.main-nav a[onclick^="filterMenu"]');
+        if (navMenuLink) {
+            navMenuLink.addEventListener('click', (event) => {
+                event.preventDefault(); // ป้องกันการกระโดดของลิงก์ #
+                const bestSellerButton = document.querySelector('.category-btn[data-category="ขายดี"]');
+                filterMenu('ขายดี', bestSellerButton); // ให้ปุ่มขายดี Active
+            });
+        }
+        
+        // Initialize Carousel และ Counter เฉพาะใน index.html
+        renderSlides();
+        startAutoSlide();
+        initializeVisitorCounter();
     }
+
 
     // Contact Form Event Listener
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
         contactForm.addEventListener('submit', handleContactFormSubmit);
     }
-    
-    // Initialize
-    renderSlides();
-    startAutoSlide();
-    initializeVisitorCounter();
     
 });

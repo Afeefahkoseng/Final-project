@@ -238,87 +238,115 @@ body {
     margin-top: 0;
 }
 
+
+/* 🟢 สไตล์สำหรับรายการสินค้าในตะกร้า (ปรับปรุงปุ่มบวก/ลบ/ถังขยะ) */
 .cart-item {
     display: flex;
-    align-items: flex-start; /* จัดเรียงด้านบน เพื่อรองรับรายละเอียดหลายบรรทัด */
-    margin-bottom: 15px;
+    /* ปรับเป็น space-between เพื่อแยกรายละเอียดกับปุ่มออกจากกัน */
+    justify-content: space-between; 
+    align-items: flex-start; 
+    padding: 10px 0;
+    border-bottom: 1px dashed #eee;
+    /* ทำให้รายการดูเป็นแถวมากขึ้นเมื่อมีรายละเอียดเยอะ */
+    gap: 10px; 
 }
 
-.cart-item img {
-    width: 60px;
-    height: 60px;
-    border-radius: 8px;
-    margin-right: 15px;
-    object-fit: cover;
-}
-
-/* 🟢 การแก้ไขปัญหาตัวอักษรล้นกรอบในตะกร้าสินค้า */
-.cart-item .item-details {
-    flex-grow: 1; /* ใช้พื้นที่ที่เหลืออย่างยืดหยุ่น */
-    overflow-wrap: break-word; /* คำที่ยาวเกินขอบจะถูกตัดขึ้นบรรทัดใหม่ */
-    word-wrap: break-word; 
+/* 🟢 ปรับปรุงสไตล์สำหรับรายละเอียดสินค้า */
+.cart-item > div:first-child { 
+    flex-grow: 1; /* ให้ใช้พื้นที่หลัก */
     min-width: 0; /* แก้ไขปัญหา Flexbox ไม่ยอมบีบข้อความยาว */
 }
 
-.cart-item .item-details .item-title {
-    display: block; 
+.cart-item-title {
+    margin-bottom: 3px;
+    font-size: 1em;
     font-weight: 600;
 }
 
-.cart-custom-details {
-    display: block; 
+.cart-item-price {
+    font-size: 0.9em;
+    color: #6c757d;
+}
+
+.cart-custom-detail {
     font-size: 0.8em;
     color: #6c757d;
-    margin-top: 3px;
+    margin: 1px 0;
     line-height: 1.3;
-    white-space: normal; /* ทำให้ข้อความปรับขึ้นบรรทัดใหม่ได้ */
-    word-break: break-all;
-}
-/* 🟢 สิ้นสุดการแก้ไขปัญหาตัวอักษรล้นกรอบ */
-
-
-.item-details h4 {
-    margin: 0;
-    font-size: 1.1em;
 }
 
-.item-details i.fa-sticky-note {
-    color: #ff6347;
-    margin-left: 5px;
+/* =============================================== */
+/* 🟢 การควบคุมจำนวนสินค้า (Quantity Controls) และปุ่มลบ (ถังขยะ) */
+/* =============================================== */
+
+.cart-item-actions {
+    display: flex;
+    flex-direction: column; /* จัดปุ่มควบคุมอยู่ด้านบนถังขยะ */
+    align-items: flex-end; /* จัดให้ชิดขวา */
+    gap: 8px; /* เว้นช่องไฟระหว่างปุ่มควบคุมกับถังขยะ */
+    flex-shrink: 0; /* ไม่ให้ส่วนนี้โดนบีบเมื่อรายละเอียดสินค้าเยอะ */
 }
 
-.item-actions {
+.cart-quantity-controls {
     display: flex;
     align-items: center;
-    margin-top: 5px;
-    margin-left: 10px; /* เพิ่มระยะห่างจากรายละเอียด */
-    flex-shrink: 0; /* ป้องกันไม่ให้ปุ่มโดนบีบ */
+    border: 1px solid #ced4da; /* เพิ่มกรอบรอบปุ่มบวกลบ */
+    border-radius: 5px;
+    overflow: hidden; 
 }
 
-.item-actions .btn-qty {
-    border: 1px solid #ced4da;
-    background: #f8f9fa;
-    width: 25px;
-    height: 25px;
+.btn-qty {
+    /* ใช้สไตล์เดิมที่กำหนดใน Global Styles (ถ้ามี) */
+    background-color: #f8f9fa;
+    color: #343a40;
+    border: none;
+    padding: 5px 10px;
     cursor: pointer;
-    border-radius: 4px;
-    font-weight: bold;
-    font-size: 14px;
-    padding: 0;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-size: 1em;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    height: 30px; 
+    line-height: 1; 
 }
-.item-actions .btn-remove {
+
+.btn-qty:hover {
+    background-color: #e2e6ea;
+}
+
+.cart-quantity-controls span {
+    padding: 0 10px;
+    font-weight: 600;
+    font-size: 0.9em;
+    width: 15px; /* กำหนดความกว้างให้ตัวเลขดูดี */
+    text-align: center;
+}
+
+.cart-quantity-controls button:first-child {
+    border-right: 1px solid #ced4da;
+}
+
+.cart-quantity-controls button:last-child {
+    border-left: 1px solid #ced4da;
+}
+
+/* ปุ่มลบสินค้า (ถังขยะ) */
+.btn-remove {
     background: none;
     border: none;
-    color: #dc3545;
-    font-size: 16px;
-    margin-left: 5px;
+    color: #dc3545; /* สีแดงสำหรับลบ */
     cursor: pointer;
     padding: 0;
+    font-size: 1.1em;
+    opacity: 0.8;
+    transition: opacity 0.2s, color 0.2s;
 }
+
+.btn-remove:hover {
+    color: #c82333;
+    opacity: 1;
+}
+/* 🟢 สิ้นสุดการปรับปรุงปุ่มในตะกร้า */
+
 
 .cart-summary p {
     font-weight: bold;
@@ -601,14 +629,16 @@ body {
     display: flex;
     transition: transform 0.6s ease-in-out;
     height: 100%;
-    width: 100%; /* 🟢 แก้ไข: ใช้ 100% สำหรับ 1 สไลด์ */
+    width: 100%; 
 }
 
 .carousel-slide {
-    flex: 0 0 100%; /* 🟢 แก้ไข: ใช้ 100% สำหรับ 1 สไลด์ */
+    flex: 0 0 100%; 
     position: relative;
     text-align: center;
     height: 100%;
+    background-size: cover;
+    background-position: center;
 }
 
 .carousel-slide img {
@@ -619,33 +649,74 @@ body {
 }
 
 /* Hero Content overlay */
-.carousel-container .hero-content {
+.carousel-caption { /* เปลี่ยนจาก hero-content เป็น carousel-caption */
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     color: #fff;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.6);
     padding: 20px 40px;
     border-radius: 10px;
     max-width: 90%;
 }
 
-.carousel-container h1 {
-    font-size: 3em;
+.carousel-caption h3 {
+    font-size: 2.2em; /* ปรับจาก h1 */
     margin-bottom: 10px;
     color: #ffcc00; 
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
 }
 
-.carousel-container p {
+.carousel-caption p { /* ปรับจาก h1 */
     font-size: 1.2em;
-    margin-bottom: 20px;
+    margin-bottom: 0;
 }
 
-/* Controls & Indicators: ถูกซ่อนเพราะเหลือสไลด์เดียว */
-.carousel-control, .carousel-indicators {
-    display: none;
+/* Controls & Indicators */
+.carousel-control {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.prev {
+    left: 0;
+    border-radius: 0 5px 5px 0;
+}
+
+.next {
+    right: 0;
+    border-radius: 5px 0 0 5px;
+}
+
+.carousel-indicators {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+}
+
+.indicator {
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.indicator.active, .indicator:hover {
+    background-color: #ff6347;
 }
 
 
@@ -683,10 +754,10 @@ body {
     .carousel-container {
         height: 250px;
     }
-    .carousel-container h1 {
+    .carousel-caption h3 {
         font-size: 1.8em;
     }
-    .carousel-container p {
+    .carousel-caption p {
         font-size: 1em;
     }
     .menu-items-grid {
