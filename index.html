@@ -21,10 +21,10 @@
         <div class="logo">
             <a href="#">Hiw jangg</a>
         </div>
-        <nav class="main-nav">
+      <nav class="main-nav">
             <ul>
                 <li><a href="#" onclick="showInfoPage('หน้าหลัก')">หน้าหลัก</a></li>
-                <li><a href="#" onclick="filterMenu('ขายดี', document.querySelector('[data-category=\"ขายดี\"]'))">เมนู</a></li>
+                <li><a href="#" onclick="filterMenu('ขายดี', this)">เมนู</a></li>
                 <li><a href="#contact-section">ติดต่อเรา</a></li>
             </ul>
         </nav>
@@ -39,22 +39,16 @@
             </div>
         </div>
     </header>
-
-    <!-- START: CAROUSEL SECTION -->
+    
     <section class="carousel-container">
         <div class="carousel-inner" id="carousel-inner">
-            <!-- Slides will be inserted here by JavaScript -->
-        </div>
+            </div>
         <button class="carousel-control prev" onclick="prevSlide()">&#10094;</button>
         <button class="carousel-control next" onclick="nextSlide()">&#10095;</button>
         <div class="carousel-indicators" id="carousel-indicators">
-            <!-- Indicators will be inserted here by JavaScript -->
-        </div>
+            </div>
     </section>
-    <!-- END: CAROUSEL SECTION -->
-
     <main class="main-container">
-        <!-- START: TWO-COLUMN CONTENT WRAPPER (Menu + Cart) -->
         <div class="content-wrapper">
             
             <section class="menu-section">
@@ -67,7 +61,6 @@
                 </div>
 
                 <div class="menu-items-grid">
-                    <!-- เมนูอาหารหลัก -->
                     <div class="menu-item" data-category="อาหาร">
                         <img src="https://esanbanna.com/wp-content/uploads/2022/12/ต้นยำกุ้ง.jpg" alt="ต้มยำกุ้ง">
                         <div class="item-info"><h3>ต้มยำกุ้งน้ำข้น</h3><p>รสชาติเข้มข้น จัดจ้านถึงเครื่องสมุนไพร</p><span class="price">69.00 THB</span><button class="btn btn-secondary" onclick="openCustomization(this)"><i class="fas fa-shopping-cart"></i> เพิ่มลงตะกร้า</button></div>
@@ -85,7 +78,6 @@
                         <div class="item-info"><h3>ข้าวผัดสับปะรด</h3><p>หอมเครื่องเทศ เสิร์ฟในลูกสับปะรด</p><span class="price">89.00 THB</span><button class="btn btn-secondary" onclick="openCustomization(this)"><i class="fas fa-shopping-cart"></i> เพิ่มลงตะกร้า</button></div>
                     </div>
 
-                    <!-- เมนูอาหารจานเดียวใหม่ -->
                     <div class="menu-item" data-category="อาหาร">
                         <img src="https://inwfile.com/s-dp/4v633v.jpg" alt="แกงส้มกุ้ง">
                         <div class="item-info"><h3>แกงส้มกุ้ง</h3><p>แกงส้มใต้รสจัดจ้าน เข้มข้นถึงใจ</p><span class="price">69.00 THB</span><button class="btn btn-secondary" onclick="openCustomization(this)"><i class="fas fa-shopping-cart"></i> เพิ่มลงตะกร้า</button></div>
@@ -95,7 +87,6 @@
                         <div class="item-info"><h3>กะเพราไก่ไข่ดาว</h3><p>ผัดกะเพราหอมๆ เผ็ดร้อน พร้อมไข่ดาว</p><span class="price">50.00 THB</span><button class="btn btn-secondary" onclick="openCustomization(this)"><i class="fas fa-shopping-cart"></i> เพิ่มลงตะกร้า</button></div>
                     </div>
 
-                    <!-- เมนูเครื่องดื่มหลัก -->
                     <div class="menu-item" data-category="เครื่องดื่ม">
                         <img src="https://www.kkday.com/th/blog/wp-content/uploads/Taiwan_Food-_Bubble-Tea_AShutterstock_409592239.jpg" alt="ชานมไข่มุก">
                         <div class="item-info"><h3>ชานมไข่มุก</h3><p>ชานมไต้หวัน รสชาติเข้มข้น หอมกลิ่นชา</p><span class="price">39.00 THB</span><button class="btn btn-secondary" onclick="openCustomization(this)"><i class="fas fa-shopping-cart"></i> เพิ่มลงตะกร้า</button></div>
@@ -105,7 +96,6 @@
                         <div class="item-info"><h3>แตงโมปั่น</h3><p>แตงโมสดชื่น ดับกระหาย</p><span class="price">35.00 THB</span><button class="btn btn-secondary" onclick="openCustomization(this)"><i class="fas fa-shopping-cart"></i> เพิ่มลงตะกร้า</button></div>
                     </div>
                     
-                    <!-- เมนูเครื่องดื่มใหม่ -->
                     <div class="menu-item" data-category="เครื่องดื่ม">
                         <img src="https://mabintea.com/wp-content/uploads/2022/11/ผงโกโก้ปั่น-โกโก้เข้มข้น-1024x904.jpg" alt="โกโก้">
                         <div class="item-info"><h3>โกโก้</h3><p>โกโก้เข้มข้น หวานมัน กลมกล่อม</p><span class="price">39.00 THB</span><button class="btn btn-secondary" onclick="openCustomization(this)"><i class="fas fa-shopping-cart"></i> เพิ่มลงตะกร้า</button></div>
@@ -123,13 +113,11 @@
                         <div class="item-info"><h3>เฉาก๊วยนมสด</h3><p>เฉาก๊วยเหนียวหนึบในนมสดเย็นๆ</p><span class="price">45.00 THB</span><button class="btn btn-secondary" onclick="openCustomization(this)"><i class="fas fa-shopping-cart"></i> เพิ่มลงตะกร้า</button></div>
                     </div>
 
-                    <!-- เมนูของหวานหลัก -->
                     <div class="menu-item" data-category="ของหวาน">
                         <img src="https://blog.hungryhub.com/wp-content/uploads/2022/04/fresh-ripe-mango-sticky-rice-with-coconut-milk-dark-surface-1024x683.jpg" alt="ข้าวเหนียวมะม่วง">
                         <div class="item-info"><h3>ข้าวเหนียวมะม่วง</h3><p>มะม่วงน้ำดอกไม้สุกหวาน กับข้าวเหนียวมูนกะทิ</p><span class="price">55.00 THB</span><button class="btn btn-secondary" onclick="openCustomization(this)"><i class="fas fa-shopping-cart"></i> เพิ่มลงตะกร้า</button></div>
                     </div>
                     
-                    <!-- เมนูของหวานใหม่ -->
                     <div class="menu-item" data-category="ของหวาน">
                         <img src="https://image.makewebcdn.com/makeweb/m_1920x0/I1MJQjJJO/MiniCake/Soft_Choc2.jpg" alt="เค้กช็อกโกแลต">
                         <div class="item-info"><h3>เค้กช็อกโกแลต</h3><p>เค้กช็อกโกแลตเข้มข้น เนื้อนุ่ม</p><span class="price">55.00 THB</span><button class="btn btn-secondary" onclick="openCustomization(this)"><i class="fas fa-shopping-cart"></i> เพิ่มลงตะกร้า</button></div>
@@ -145,8 +133,7 @@
                 <h3>ตะกร้าสินค้า <span id="cart-count-text">(0 ชิ้น)</span></h3>
                 
                 <div class="cart-items" id="cart-items">
-                    <!-- Cart items will be rendered here by script.js -->
-                </div>
+                    </div>
 
                 <div class="cart-summary">
                     <p>ราคารวม: <span id="cart-total">0.00 THB</span></p>
@@ -154,9 +141,6 @@
                 </div>
             </aside>
         </div>
-        <!-- END: TWO-COLUMN CONTENT WRAPPER -->
-        
-        <!-- START: CONTACT FORM SECTION (Moved outside the content-wrapper to be full-width at the bottom) -->
         <section class="contact-section" id="contact-section">
             <h2><i class="fas fa-headset"></i> ติดต่อเรา</h2>
             <p>เรายินดีรับฟังข้อเสนอแนะและตอบคำถามของคุณ</p>
@@ -177,10 +161,8 @@
                 <p id="contact-message-status" style="margin-top: 10px;"></p>
             </form>
         </section>
-        <!-- END: CONTACT FORM SECTION -->
-    </main>
+        </main>
     
-    <!-- MODAL (Same as before) -->
     <div id="customizationModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeCustomization()">&times;</span>
@@ -255,11 +237,9 @@
             <p>โทร: 02-123-45678</p>
             <p>อีเมล: contact@hiwjangg.com</p>
         </div>
-        <!-- START: VISITOR COUNTER DISPLAY -->
         <div class="visitor-counter">
             <p>ผู้เข้าชมเว็บไซต์: <span id="visitor-count-display">...</span></p>
         </div>
-        <!-- END: VISITOR COUNTER DISPLAY -->
         <div class="social-media">
             <a href="#"><i class="fab fa-facebook-f"></i></a>
             <a href="#"><i class="fab fa-instagram"></i></a>
